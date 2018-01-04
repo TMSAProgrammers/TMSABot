@@ -30,7 +30,7 @@ public class Runner {
         String token = getToken(args);
         CompletableFuture<BotManager> botManagerFuture = new CompletableFuture<>();
         BotManager passthrough = new PassthroughBotManager(botManagerFuture);
-        BotManager botManager = new BotManagerImpl(createShardManager(token, createLogger("ThetaInit"), passthrough), new BotConfigManagerImpl(new ConfigFileManager("theta.xml")), new CommandManagerImpl(passthrough), createLogger("Theta"));
+        BotManager botManager = new BotManagerImpl(createShardManager(token, createLogger("TMSABotInit"), passthrough), new BotConfigManagerImpl(new ConfigFileManager("tmsabot.xml")), new CommandManagerImpl(passthrough), createLogger("TMSABot"));
         botManagerFuture.complete(botManager);
         CommandRegistrar.registerCommands(botManager.getCommandManager());
     }
@@ -49,7 +49,7 @@ public class Runner {
             ShardManager shardManager = new DefaultShardManagerBuilder().setEventManager(new InterfacedEventManager())
                                                                         .addEventListeners(new DiscordEventListener(botManager,
                                                                                 Collections.unmodifiableList(Arrays.asList(NOT_BOT_SENDER, LISTENING_IN_CHANNEL, NOT_BLACKLISTED))))
-                                                                        .setGame(Game.playing("Type @Theta help"))
+                                                                        .setGame(Game.playing("Type @TMSABot help"))
                                                                         .setAutoReconnect(true)
                                                                         .setShardsTotal(-1) // Get recommended number from Discord
                                                                         .setToken(token)
