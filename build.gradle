@@ -11,8 +11,21 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    jcenter()
+}
+
+ext {
+    botDependencies = [
+            JDA          : 'net.dv8tion:JDA:3.4.0_318',
+            ThetaAPI     : 'com.github.meowingtwurtle:theta-api:201801060201',
+            ThetaBase    : 'com.github.meowingtwurtle:theta-impl:201801060201',
+            ThetaCommands: 'com.github.meowingtwurtle:theta-builtin-commands:201801060201',
+    ]
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile botDependencies['JDA']
+    compile botDependencies['ThetaAPI']
+    compile botDependencies['ThetaBase']
+    compile botDependencies['ThetaCommands']
 }
