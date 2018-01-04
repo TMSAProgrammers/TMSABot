@@ -1,7 +1,11 @@
-group 'com.github.meowingtwurtle'
-version '1.0-SNAPSHOT'
+plugins {
+    id 'org.ajoberstar.grgit' version '2.1.0'
+}
 
 apply plugin: 'java'
+
+group 'com.github.meowingtwurtle'
+version = grgit.head().getAbbreviatedId()
 
 sourceCompatibility = 1.8
 
