@@ -1,6 +1,7 @@
 package com.github.meowingtwurtle.tmsabot;
 
 import com.srgood.reasons.BotManager;
+import com.srgood.reasons.config.BotConfigManager;
 import com.srgood.reasons.impl.base.BotManagerImpl;
 import com.srgood.reasons.impl.base.DiscordEventListener;
 import com.srgood.reasons.impl.base.commands.CommandManagerImpl;
@@ -30,7 +31,8 @@ public class Runner {
         String token = getToken(args);
         CompletableFuture<BotManager> botManagerFuture = new CompletableFuture<>();
         BotManager passthrough = new PassthroughBotManager(botManagerFuture);
-        BotManager botManager = new BotManagerImpl(createShardManager(token, createLogger("TMSABotInit"), passthrough), new BotConfigManagerImpl(new ConfigFileManager("tmsabot.xml")), new CommandManagerImpl(passthrough), createLogger("TMSABot"));
+        BotConfigManagerImpl configManager = new BotConfigManagerImpl(new ConfigFileManager("tmsabot.xml"));
+        BotManager botManager = new BotManagerImpl(createShardManager(token, createLogger("TMSABotInit"), passthrough, configManager), configManager, new CommandManagerImpl(passthrough), createLogger("TMSABot"));
         botManagerFuture.complete(botManager);
         CommandRegistrar.registerCommands(botManager.getCommandManager());
     }
@@ -44,11 +46,11 @@ public class Runner {
         return args[0];
     }
 
-    private static ShardManager createShardManager(String token, Logger logger, BotManager botManager) {
+    private static ShardManager createShardManager(String token, Logger logger, BotManager botManager, BotConfigManager configManager) {
         try {
             ShardManager shardManager = new DefaultShardManagerBuilder().setEventManager(new InterfacedEventManager())
                                                                         .addEventListeners(new DiscordEventListener(botManager,
-                                                                                Collections.unmodifiableList(Arrays.asList(NOT_BOT_SENDER, LISTENING_IN_CHANNEL, NOT_BLACKLISTED))))
+                                                                                Collections.unmodifiableList(Arrays.asList(NOT_BOT_SENDER, LISTENING_IN_CHANNEL, NOT_BLACKLISTED))), new CensorEventListener(configManager))
                                                                         .setGame(Game.playing("Type @TMSABot help"))
                                                                         .setAutoReconnect(true)
                                                                         .setShardsTotal(-1) // Get recommended number from Discord
